@@ -35,4 +35,18 @@ public class DeathBlock extends GameObject{
 		return new Rectangle((int) x, (int) y, 32, 32);
 	}
 
+	public Rectangle getBoundsRight() {
+		return null;
+	}
+
+	public Rectangle getBoundsLeft() {
+		return null;
+	}
+
+	@Override
+	public Rectangle getBoundsTop() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
 }
