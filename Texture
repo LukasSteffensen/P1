@@ -7,16 +7,18 @@ import com.Lukas.Mario.Window.BufferedImageLoader;
 
 public class Texture {
 	
-	SpriteSheet bs, ps, ds, cs;
+	SpriteSheet bs, ps, ds, cs, es;
 	private BufferedImage block_sheet = null;
 	private BufferedImage player_sheet = null;
 	private BufferedImage death_sheet = null;
 	private BufferedImage consumables_sheet = null;
+	private BufferedImage enemy_sheet = null;
 	
-	public BufferedImage[] block = new BufferedImage[5];
+	public BufferedImage[] block = new BufferedImage[6];
 	public BufferedImage[] player = new BufferedImage[1];
 	public BufferedImage[] death = new BufferedImage[2];
 	public BufferedImage[] consumable = new BufferedImage[1];
+	public BufferedImage[] enemy = new BufferedImage[1];
 	
 	public Texture() {
 		
@@ -26,6 +28,7 @@ public class Texture {
 			player_sheet = loader.loadImage("/player_sheet.png");
 			death_sheet = loader.loadImage("/death_sheet.png");
 			consumables_sheet = loader.loadImage("/consumables_sheet.png");
+			enemy_sheet = loader.loadImage("/enemy_sheet.png");
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -34,6 +37,7 @@ public class Texture {
 		ps = new SpriteSheet(player_sheet);
 		ds = new SpriteSheet(death_sheet);
 		cs = new SpriteSheet(consumables_sheet);
+		es = new SpriteSheet(enemy_sheet);
 		
 		getTextures();
 	}
@@ -44,11 +48,14 @@ public class Texture {
 		block[2] = bs.grabImage(4, 1, 32, 32); // left end of platform
 		block[3] = bs.grabImage(5, 1, 32, 32); // middle of platform
 		block[4] = bs.grabImage(1, 2, 32, 32);// right end of platform
+		block[5] = bs.grabImage(3, 1, 32, 32); 
 		
 		death[0] = ds.grabImage(1, 1, 32, 32);
 		death[1] = ds.grabImage(3, 1, 32, 32);
 		
 		consumable[0] = cs.grabImage(1, 1, 32, 32);
+		
+		enemy[0] = es.grabImage(1, 1, 32, 32);
 		
 		player[0] = ps.grabImage(1, 1, 32, 64); //idle frame for player
 	}
