@@ -1,0 +1,53 @@
+package com.Lukas.Mario.platformer.objects;
+
+import java.awt.Graphics;
+import java.awt.Rectangle;
+import java.util.LinkedList;
+
+import com.Lukas.Mario.Window.Game;
+import com.Lukas.Mario.Window.Handler;
+import com.Lukas.Mario.platformer.framework.GameObject;
+import com.Lukas.Mario.platformer.framework.ObjectId;
+import com.Lukas.Mario.platformer.framework.Texture;
+
+public class InfoBlock extends GameObject{
+	
+	private float width = 32, height = 28;
+	
+	Texture tex = Game.getInstance();
+	public static int type;
+	Handler handler;
+
+	public InfoBlock(float x, float y, int type, ObjectId id) {
+		super(x, y, id);
+		this.type = type;
+	}
+
+	public void tick(LinkedList<GameObject> object) {
+		
+	}
+
+	public void render(Graphics g) {
+		
+		if(type == 5)
+			g.drawImage(tex.block[5], (int) x, (int) y, null);
+		
+	}
+
+	public Rectangle getBounds() {
+		return new Rectangle((int) x, (int) y, 32, 27);
+	}
+
+	public Rectangle getBoundsRight() {
+		return null;
+	}
+
+	public Rectangle getBoundsLeft() {
+		return null;
+	}
+
+	public Rectangle getBoundsTop() {
+		return new Rectangle((int) x, (int) ((int)y + (height)), 32, (int)height/8);
+	}
+
+}
