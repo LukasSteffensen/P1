@@ -12,13 +12,7 @@ import java.util.Random;
 import com.Lukas.Mario.platformer.framework.KeyInput;
 import com.Lukas.Mario.platformer.framework.ObjectId;
 import com.Lukas.Mario.platformer.framework.Texture;
-import com.Lukas.Mario.platformer.objects.Block;
-import com.Lukas.Mario.platformer.objects.Coin;
-import com.Lukas.Mario.platformer.objects.DeathBlock;
-import com.Lukas.Mario.platformer.objects.Flag;
-import com.Lukas.Mario.platformer.objects.Goomba;
-import com.Lukas.Mario.platformer.objects.InfoBlock;
-import com.Lukas.Mario.platformer.objects.Player;
+import com.Lukas.Mario.Window.Menu;
 
 public class Game extends Canvas implements Runnable 
 
@@ -32,6 +26,7 @@ public class Game extends Canvas implements Runnable
 	Handler handler;
 	static Camera cam;
 	static Texture tex;
+	private Menu menu;
 	Random rand = new Random();
 	public static int lives = 5;
 	public static int hp = 100;
@@ -42,6 +37,13 @@ public class Game extends Canvas implements Runnable
 	public static int LEVEL = 1;
 	public static int jumps = 0;
 	
+	public enum STATE { // There are two stages; Menu and Game
+		MENU, // The first stage is menu; you will see this when you open the game
+		INSTRUCTIONS, 
+		GAME
+	};
+	
+	public STATE state = STATE.MENU;
 	
 	public void init() {
 		
@@ -56,14 +58,16 @@ public class Game extends Canvas implements Runnable
 		
 		cam = new Camera(0, 0);
 		handler = new Handler(cam);
+		menu = new Menu(this, handler);
+		this.addMouseListener(menu);
+		this.addKeyListener(new KeyInput(handler));
 		
+		 // The game only loads the level when the game state is Game
+		if(state == STATE.GAME) {
+			
 		handler.LoadImageLevel(level);
 		
-		// handler.addObject(new Player(64, 400, handler, ObjectId.Player));
-		
-		// handler.createLevel();
-		
-		this.addKeyListener(new KeyInput(handler));
+		}
 	}
 	
 	
@@ -114,11 +118,17 @@ public class Game extends Canvas implements Runnable
 	private void tick()
 	{
 	handler.tick();
-	for(int i = 0; i < handler.object.size(); i++) {
+	if(state == STATE.GAME) { // The game is only updated when the game is running
+		for(int i = 0; i < handler.object.size(); i++) {
 		if (handler.object.get(i).getId() == ObjectId.Player) {
 			cam.tick(handler.object.get(i));
 			}
 		}
+	} else if(state == STATE.MENU) {
+		menu.tick();
+	}
+	
+	
 	}
 	
 	private void render()
@@ -126,7 +136,7 @@ public class Game extends Canvas implements Runnable
 		BufferStrategy bs = this.getBufferStrategy();
 		if(bs == null)
 		{
-			this.createBufferStrategy(3);
+			this.createBufferStrategy(2);
 			return;
 		}
 		
@@ -135,9 +145,9 @@ public class Game extends Canvas implements Runnable
 		///////////////////////////////////
 		
 		
-		//Draw here
-		g.setColor(Color.BLACK);
-		g.fillRect(0, 0, getWidth(), getHeight());
+		//Draw here (everything inthe game)
+		g.setColor(Color.BLACK); // Makes the screen not flash
+		g.fillRect(0, 0, getWidth(), getHeight()); // see above
 		Font hud = new Font("arial", 1, 20);
 		
 		g.setFont(hud);
@@ -146,6 +156,11 @@ public class Game extends Canvas implements Runnable
 		
 		// begin of cam
 		g2d.translate(cam.getX(), cam.getY()); 
+		
+		
+		
+		if(state == STATE.GAME) { // The background is only shown when the game is running 
+			
 		
 		
 		for(int xx = -500; xx < background.getWidth() * 10; xx += background.getWidth()) {
@@ -166,13 +181,13 @@ public class Game extends Canvas implements Runnable
 		
 		handler.render(g);
 		
-		if(info1 % 2 != 0) { // skriv hvad der skal ske når man rammer den første info box
-			g.setFont(hud);
-			g.setColor(Color.black);
-			g.drawRect(100, 200, 250, 200);
-			g.fillRect(100, 200, 250, 200);
-			g.setColor(Color.WHITE);
-			g.drawString("Here's how to play!", 110, 220);
+		
+		if(info1 % 2 != 0) { // what happens when you hit the info box
+			g.setFont(hud); // Size and font of text (see further above)
+			g.setColor(Color.black); // The background of the info box
+			g.fillRect(100, 200, 250, 200); // Size and placement of the box
+			g.setColor(Color.WHITE); // The color of the text
+			g.drawString("Here's how to play!", 110, 220); // Text in box + placement of text
 		}
 		
 		if(kills > 0) {
@@ -192,16 +207,19 @@ public class Game extends Canvas implements Runnable
 		g.drawRect(5, 5, 200, 32);
 		
 		g.setFont(hud);
-		g.setColor(Color.black);
-		g.drawString("Lives: " + lives, 5, 60);
+		g.setColor(Color.black); // color of text
+		g.drawString("Lives: " + lives, 5, 60); // Placement of the text. 1st: distance from the left. 2nd: Distance from the top.
 		
 		g.setFont(hud);
-		g.setColor(Color.black);
-		g.drawString("Tickets: " + score, 5, 80);
+		g.setColor(Color.black); // color of text
+		g.drawString("Tickets: " + score, 5, 80); // Placement of the text. 1st: distance from the left. 2nd: Distance from the top.
 		
 		
 		
+		} else if(state == STATE.MENU || state == STATE.INSTRUCTIONS) {
+			menu.render(g);
 		
+		}
 		/////////////////////////////////
 		g.dispose();
 		bs.show();
@@ -214,7 +232,7 @@ public class Game extends Canvas implements Runnable
 		
 	public static void main(String[] argv) 
 	{
-		new Window(800, 600, "Political Platformer Game Prototype", new Game());
+		new Window(800, 600, "Couch-Voter Carnival", new Game()); // size of screen + name of the game
 			
 			
 	}
