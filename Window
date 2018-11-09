@@ -7,7 +7,7 @@ import javax.swing.JFrame;
 public class Window 
 {
 	
-	public Window(int w, int h, String title, Game game)
+	public Window(int w, int h, String title, Game game) // opens the window
 	{
 		game.setPreferredSize(new Dimension(w, h));
 		game.setMaximumSize(new Dimension(w, h));
@@ -16,8 +16,8 @@ public class Window
 		JFrame frame = new JFrame(title);
 		frame.add(game);
 		frame.pack();
-		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		frame.setResizable(false);
+		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE); // You exit the game when you press "x" at the top right corner
+		frame.setResizable(false); // determines whether you can adjust the size of the frame while playing
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 		
