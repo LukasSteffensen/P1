@@ -12,10 +12,10 @@ import com.Lukas.Mario.platformer.framework.Texture;
 
 public class Goomba extends GameObject{
 	
-private float width = 32, height = 32;
+private float width = 32, height = 32; // size of the goomba
 	
-private float gravity = 0.35f;
-private final float MAX_SPEED = 10;
+private float gravity = 0.35f; // the amount of force from above (gravity)
+private final float MAX_SPEED = 10; // max speed of the goomba (not actual speed)
 private int type;
 private int reverse = 1;
 	
@@ -33,13 +33,13 @@ public Goomba(float x, float y, int type, Handler handler, ObjectId id) {
 		y += velY;
 		
 		if(reverse % 2 != 0) {
-		velX = -1;
+		velX = -1; // speed when it walks to the left
 		}else if(reverse % 2 == 0) {
-			velX = 1;
+			velX = 1; // speed when it walks to the right
 		}
 		
-		if(falling || jumping) {
-			velY += gravity;
+		if(falling) {
+			velY += gravity; // if the goomba falls, gravity will apply
 		
 		
 		if(velY > MAX_SPEED)
@@ -59,9 +59,8 @@ public Goomba(float x, float y, int type, Handler handler, ObjectId id) {
 				y = tempObject.getY() - height;
 				velY = 0;
 				falling = false;
-				jumping = false;
 			}else {
-				falling = true;
+				falling = true; // allows the goomba to fall if there isn't a block below
 			}
 			
 			
@@ -79,7 +78,7 @@ public Goomba(float x, float y, int type, Handler handler, ObjectId id) {
 				if(getBounds().intersects(tempObject.getBounds())) {
 					
 					if(reverse % 2 != 0) {
-						x = tempObject.getX() + width + 8;
+						x = tempObject.getX() + width + 8; 
 					}
 					if(reverse % 2 == 0) {
 						x = tempObject.getX() - width - 8;
@@ -97,11 +96,11 @@ public Goomba(float x, float y, int type, Handler handler, ObjectId id) {
 	}
 	
 	public Rectangle getBoundsTop() {
-		return new Rectangle((int) x, (int)y, 32, (int)height/8);
+		return new Rectangle((int) x, (int)y, 32, (int)height/8); 
 	}
 
 	public Rectangle getBounds() {
-		return new Rectangle((int) x, (int) ((int)y + (height)), 32, (int)height/8);
+		return new Rectangle((int) x, (int) ((int)y + (height)), 32, (int)height/8); 
 	}
 	public Rectangle getBoundsRight() {
 		return new Rectangle((int) ((int)x + width - 5), (int)y + 5, (int)5, (int)height-10);
