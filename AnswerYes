@@ -12,7 +12,7 @@ import com.Lukas.Mario.platformer.framework.Texture;
 
 public class AnswerYes extends GameObject {
 	
-	private float width = 32, height = 28;
+	private int width = 32, height = 28;
 	
 	Texture tex = Game.getInstance();
 	public static int type;
@@ -34,12 +34,12 @@ public class AnswerYes extends GameObject {
 			g.drawImage(tex.block[6], (int) x, (int) y, null);
 		}
 		g.drawRect((int) x + 2, (int) ((int)y + (height)), 28, (int)height/8);
-		g.drawRect((int) x, (int) y, 32, 27);
+		g.drawRect((int) x, (int) y, width, height);
 		
 	}
 
 	public Rectangle getBounds() {
-		return new Rectangle((int) x, (int) y, 32, 27);
+		return new Rectangle((int) x, (int) y, width, height);
 	}
 
 	public Rectangle getBoundsRight() {
