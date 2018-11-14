@@ -1,6 +1,6 @@
 package com.Lukas.Mario.platformer.framework;
 
-public enum ObjectId {
+public enum ObjectId { // a library that holds all of the objects for our game.
 	
 	Player,
 	Block,
@@ -9,7 +9,9 @@ public enum ObjectId {
 	Coin,
 	Enemy,
 	InfoBlock,
-	Flag;
+	Flag,
+	Boss,
+	AnswerYes;
 
 
 }
