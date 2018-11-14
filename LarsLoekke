@@ -1,6 +1,5 @@
 package com.Lukas.Mario.platformer.objects;
 
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Rectangle;
 import java.util.LinkedList;
@@ -12,17 +11,19 @@ import com.Lukas.Mario.platformer.framework.GameObject;
 import com.Lukas.Mario.platformer.framework.ObjectId;
 import com.Lukas.Mario.platformer.framework.Texture;
 
-public class Boss extends GameObject {
+public class LarsLøkke extends GameObject {
+
+	public static float width = 64, height = 128;
 
 	private float gravity = 0.35f;
 	private final float MAX_SPEED = 10;
-	private int velX = -2;
+	private double velX = -2;
 	private Handler handler;
 	Random r = new Random();
 
 	Texture tex = Game.getInstance();
 
-	public Boss(float x, float y, int type, Handler handler, ObjectId id) {
+	public LarsLøkke(float x, float y, int type, Handler handler, ObjectId id) {
 		super(x, y, id);
 		this.handler = handler;
 	}
@@ -30,6 +31,29 @@ public class Boss extends GameObject {
 	public void tick(LinkedList<GameObject> object) {
 		x += velX;
 		y += velY;
+		
+		if(Game.bossHealth < 76 && Game.bossHealth > 50) {
+			if(velX > 0) {
+				velX = 3;
+			} else if(velX < 0) {
+				velX = -3;
+			}
+		}
+		
+		if(Game.bossHealth < 51 && Game.bossHealth > 25) {
+			if(velX > 0) {
+				velX = 4;
+			} else if(velX < 0) {
+				velX = -4;
+			}
+		}
+		if(Game.bossHealth < 26) {
+			if(velX > 0) {
+				velX = 5;
+			} else if(velX < 0) {
+				velX = -5;
+			}
+		}
 
 		if (falling || jumping) {
 			velY += gravity;
@@ -64,23 +88,41 @@ public class Boss extends GameObject {
 			if (tempObject.getId() == ObjectId.Block) {
 
 				if (getBounds().intersects(tempObject.getBounds())) {
-					y = tempObject.getY() - 128;
+					y = tempObject.getY() - height;
 					velY = 0;
 					falling = false;
 					jumping = false;
 				} else {
 					falling = true;
 				}
-			}
 
+				if (getBoundsLeft().intersects(tempObject.getBounds())) {
+					x = tempObject.getX() + width + 2;
+					reverse();
+				}
+				if (getBoundsRight().intersects(tempObject.getBounds())) {
+					x = tempObject.getX() - width - 2;
+					reverse();
+				}
+			}
 			if (tempObject.getId() == ObjectId.DeathBlock) {
 
 				if (getBounds().intersects(tempObject.getBounds())) {
 
-					y = tempObject.getY() - 128;
+					y = tempObject.getY() - height;
 					falling = false;
-				} else {
+				}else {
 					falling = true;
+				}
+				
+				if (getBoundsLeft().intersects(tempObject.getBounds())) {
+					x = tempObject.getX() + width + 8;
+					reverse();
+				}
+				
+				if (getBoundsRight().intersects(tempObject.getBounds())) {
+					x = tempObject.getX() - width - 8;
+					reverse();
 				}
 			}
 		}
@@ -94,23 +136,27 @@ public class Boss extends GameObject {
 	public void render(Graphics g) {
 
 		g.drawImage(tex.boss[0], (int) x, (int) y, null);
-
+		g.drawRect((int) x + 16, (int) y, 32, 64);
+		g.drawRect((int) x + 16, (int) y+65, 32, 64);
+		g.drawRect((int) x, (int) y + 20, 5, 96);
+		g.drawRect((int) x + 59, (int) y + 20, 5, 96);
+	
 	}
 
 	public Rectangle getBounds() {
-		return new Rectangle((int) x, (int) y, 64, 128);
-	}
-
-	public Rectangle getBoundsRight() {
-		return null;
-	}
-
-	public Rectangle getBoundsLeft() {
-		return null;
+		return new Rectangle((int) x + 16, (int) y+64, 32, 64);
 	}
 
 	public Rectangle getBoundsTop() {
-		return null;
+		return new Rectangle((int) x + 16, (int) y, 32, 64);
+	}
+
+	public Rectangle getBoundsRight() {
+		return new Rectangle((int) x + 59, (int) y + 20, 5, 96);
+	}
+
+	public Rectangle getBoundsLeft() {
+		return new Rectangle((int) x, (int) y + 20, 5, 96);
 	}
 
 }
