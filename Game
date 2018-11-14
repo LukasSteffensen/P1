@@ -1,3 +1,4 @@
+
 package com.Lukas.Mario.Window;
 
 import java.awt.Canvas;
@@ -14,15 +15,15 @@ import com.Lukas.Mario.platformer.framework.ObjectId;
 import com.Lukas.Mario.platformer.framework.Texture;
 import com.Lukas.Mario.Window.Menu;
 
-public class Game extends Canvas implements Runnable 
+public class Game extends Canvas implements Runnable
 
 {
 	private static final long serialVersionUID = -8036719210360855328L;
-	
+
 	private Thread thread;
 	private boolean running = false;
 	public static int WIDTH, HEIGHT;
-	public BufferedImage level = null, background = null;
+	private BufferedImage level = null, background = null, level2 = null;
 	Handler handler;
 	static Camera cam;
 	static Texture tex;
@@ -33,208 +34,199 @@ public class Game extends Canvas implements Runnable
 	public static int score = 0;
 	public static int kills = 0;
 	public static byte info1 = 0;
-	public static byte info2 = 0;
+	public static int infoTime = 0;
+	public static int bossHealth = 100;
+
 	public static int LEVEL = 1;
 	public static int jumps = 0;
-	
-	public enum STATE { // There are two stages; Menu and Game
+
+	public enum STATE { // These are the states of the game
 		MENU, // The first stage is menu; you will see this when you open the game
-		INSTRUCTIONS, 
-		GAME
+		Story, INSTRUCTIONS, // In the menu you can click instructions to see how to play the game
+		GAME // this is the state youre in when actually playing the game
 	};
-	
-	public STATE state = STATE.MENU;
-	
+
+	public STATE state = STATE.GAME;
+
 	public void init() {
-		
+
 		WIDTH = getWidth();
 		HEIGHT = getHeight();
-		
-		tex = new Texture();		
+
+		tex = new Texture();
 
 		BufferedImageLoader loader = new BufferedImageLoader();
 		level = loader.loadImage("/real_level.png"); // load the premade level
+		level2 = loader.loadImage("/level1.png");
 		background = loader.loadImage("/background.png");
-		
+
 		cam = new Camera(0, 0);
 		handler = new Handler(cam);
 		menu = new Menu(this, handler);
 		this.addMouseListener(menu);
 		this.addKeyListener(new KeyInput(handler));
-		
-		 // The game only loads the level when the game state is Game
-		if(state == STATE.GAME) {
-			
-		handler.LoadImageLevel(level);
-		
+
+		// The game only loads the level when the game state is Game
+		if (state == STATE.GAME) {
+
+			handler.loadImageLevel(level);
+
 		}
 	}
-	
-	
+
 	public synchronized void start() {
-		if(running)
+		if (running)
 			return;
-		
+
 		running = true;
 		thread = new Thread(this);
 		thread.start();
-		
+
 	}
 
-
-	public void run() 
-	{
+	public void run() {
 		init();
 		this.requestFocus();
 		this.requestFocus();
 		long lastTime = System.nanoTime();
-		double amountOfTicks = 60.0;
+		double amountOfTicks = 50.0;
 		double ns = 1000000000 / amountOfTicks;
 		double delta = 0;
 		long timer = System.currentTimeMillis();
 		int updates = 0;
 		int frames = 0;
-		while(running) {
+		while (running) {
 			long now = System.nanoTime();
 			delta += (now - lastTime) / ns;
 			lastTime = now;
-			while(delta >= 1) {
+			while (delta >= 1) {
 				tick();
 				updates++;
 				delta--;
 			}
 			render();
 			frames++;
-			
-			if(System.currentTimeMillis() - timer > 1000) {
+
+			if (System.currentTimeMillis() - timer > 1000) {
 				timer += 1000;
 				System.out.println("FPS: " + frames + " TICKS: " + updates);
 				frames = 0;
 				updates = 0;
 			}
 		}
-	} 
-	
-	private void tick()
-	{
-	handler.tick();
-	if(state == STATE.GAME) { // The game is only updated when the game is running
-		for(int i = 0; i < handler.object.size(); i++) {
-		if (handler.object.get(i).getId() == ObjectId.Player) {
-			cam.tick(handler.object.get(i));
+	}
+
+	private void tick() {
+		handler.tick();
+		if (state == STATE.GAME) { // The game is only updated when the game is running
+			for (int i = 0; i < handler.object.size(); i++) {
+				if (handler.object.get(i).getId() == ObjectId.Player) {
+					cam.tick(handler.object.get(i));
+				}
 			}
+		} else if (state == STATE.MENU) {
+			menu.tick();
 		}
-	} else if(state == STATE.MENU) {
-		menu.tick();
+
 	}
-	
-	
-	}
-	
-	private void render()
-	{
+
+	private void render() {
 		BufferStrategy bs = this.getBufferStrategy();
-		if(bs == null)
-		{
+		if (bs == null) {
 			this.createBufferStrategy(2);
 			return;
 		}
-		
+
 		Graphics g = bs.getDrawGraphics();
 		Graphics2D g2d = (Graphics2D) g;
 		///////////////////////////////////
-		
-		
-		//Draw here (everything inthe game)
+
+		// Draw here (everything inthe game)
 		g.setColor(Color.BLACK); // Makes the screen not flash
 		g.fillRect(0, 0, getWidth(), getHeight()); // see above
 		Font hud = new Font("arial", 1, 20);
-		
+
 		g.setFont(hud);
 		g.setColor(Color.black);
 		g.drawString("Score: " + score, 120, 50);
-		
+
 		// begin of cam
-		g2d.translate(cam.getX(), cam.getY()); 
-		
-		
-		
-		if(state == STATE.GAME) { // The background is only shown when the game is running 
+		g2d.translate(cam.getX(), cam.getY());
+
+		if (state == STATE.GAME) { // The background is only shown when the game is running
+
+			for (int xx = -500; xx < background.getWidth() * 10; xx += background.getWidth()) {
+				g.drawImage(background, xx, 0, this);
+			}
+			for (int xx = -500; xx < background.getWidth() * 10; xx += background.getWidth()) {
+				g.drawImage(background, xx, 640, this);
+			}
+			for (int xx = -500; xx < background.getWidth() * 10; xx += background.getWidth()) {
+				g.drawImage(background, xx, 1280, this);
+			}
+			for (int xx = -500; xx < background.getWidth() * 10; xx += background.getWidth()) {
+				g.drawImage(background, xx, 1920, this);
+			}
+			for (int xx = -500; xx < background.getWidth() * 10; xx += background.getWidth()) {
+				g.drawImage(background, xx, 2560, this);
+			}
+
+			handler.render(g);
+
+			if (info1 > 0) { // what happens when you hit the info box
+				infoTime++;
+				g.setFont(hud); // Size and font of text (see further above)
+				g.setColor(Color.black); // The background of the info box
+				g.fillRect(1500, 1000, 250, 200); // Size and placement of the box
+				g.setColor(Color.WHITE); // The color of the text
+				g.drawString("Here's how to play!", 110, 220); // Text in box + placement of text
+			}
+			if (infoTime > 1000) {
+				info1 = 0;
+				infoTime = 0;
+			}
+
+			// end of cam
+			g2d.translate(-cam.getX(), -cam.getY());
 			
-		
-		
-		for(int xx = -500; xx < background.getWidth() * 10; xx += background.getWidth()) {
-			g.drawImage(background, xx, 0, this);
-		}
-		for(int xx = -500; xx < background.getWidth() * 10; xx += background.getWidth()) {
-			g.drawImage(background, xx, 640, this);
-		}
-		for(int xx = -500; xx < background.getWidth() * 20; xx += background.getWidth()) {
-			g.drawImage(background, xx, 1280, this);
-		}
-		for(int xx = -500; xx < background.getWidth() * 20; xx += background.getWidth()) {
-			g.drawImage(background, xx, 1920, this);
-		}
-		for(int xx = -500; xx < background.getWidth() * 20; xx += background.getWidth()) {
-			g.drawImage(background, xx, 2560, this);
-		}
-		
-		handler.render(g);
-		
-		
-		if(info1 % 2 != 0) { // what happens when you hit the info box
-			g.setFont(hud); // Size and font of text (see further above)
-			g.setColor(Color.black); // The background of the info box
-			g.fillRect(100, 200, 250, 200); // Size and placement of the box
-			g.setColor(Color.WHITE); // The color of the text
-			g.drawString("Here's how to play!", 110, 220); // Text in box + placement of text
-		}
-		
-		if(kills > 0) {
+			if(Game.LEVEL == 2) {			
+			g.setColor(Color.gray);
+			g.drawRect(250, 5, 300, 32);
+			g.setColor(Color.green);
+			g.fillRect(250, 5, bossHealth * 3, 32);
+			g.setColor(Color.BLACK);
+			g.drawRect(250, 5, 300, 32);
+			g.drawString("Yo mofo, is da bozz", 300, 60);
+			}
+
 			g.setFont(hud);
-			g.setColor(Color.black);
-			g.drawString("Good job, you killed an enemy!", 400, 200);
-		}
-		
-		// end of cam
-		g2d.translate(-cam.getX(), -cam.getY());
-		
-		g.setColor(Color.gray);
-		g.drawRect(5, 5, 200, 32);
-		g.setColor(Color.green);
-		g.fillRect(5, 5, hp*2, 32);
-		g.setColor(Color.BLACK);
-		g.drawRect(5, 5, 200, 32);
-		
-		g.setFont(hud);
-		g.setColor(Color.black); // color of text
-		g.drawString("Lives: " + lives, 5, 60); // Placement of the text. 1st: distance from the left. 2nd: Distance from the top.
-		
-		g.setFont(hud);
-		g.setColor(Color.black); // color of text
-		g.drawString("Tickets: " + score, 5, 80); // Placement of the text. 1st: distance from the left. 2nd: Distance from the top.
-		
-		
-		
-		} else if(state == STATE.MENU || state == STATE.INSTRUCTIONS) {
+			g.setColor(Color.black); // color of text
+			g.drawString("Lives: " + lives, 5, 60); // Placement of the text. 1st: distance from the left. 2nd: Distance
+													// from the top.
+
+			g.setFont(hud);
+			g.setColor(Color.black); // color of text
+			g.drawString("Tickets: " + score, 5, 80); // Placement of the text. 1st: distance from the left. 2nd:
+														// Distance from the top.
+
+		} else if (state == STATE.MENU || state == STATE.INSTRUCTIONS || state == STATE.Story) {
 			menu.render(g);
-		
+
 		}
 		/////////////////////////////////
 		g.dispose();
 		bs.show();
-		
+
 	}
-	
+
 	public static Texture getInstance() {
 		return tex;
 	}
-		
-	public static void main(String[] argv) 
-	{
+
+	public static void main(String[] argv) {
 		new Window(800, 600, "Couch-Voter Carnival", new Game()); // size of screen + name of the game
-			
-			
+
 	}
 
 }
+
