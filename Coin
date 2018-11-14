@@ -24,8 +24,8 @@ public class Coin extends GameObject{
 	}
 
 	public void render(Graphics g) {
-		if(type == 0)
-			g.drawImage(tex.consumable[0], (int) x, (int) y, null);
+		if(type == 7)
+			g.drawImage(tex.block[7], (int) x, (int) y, null);
 	}
 
 	public Rectangle getBounds() {
