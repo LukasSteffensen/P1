@@ -1,19 +1,25 @@
 package com.Lukas.Mario.platformer.framework;
 
+import java.awt.Image;
 import java.awt.image.BufferedImage;
 
 import com.Lukas.Mario.Window.BufferedImageLoader;
 
 public class Texture {
 	
-	SpriteSheet bs, ps, larss;
+	SpriteSheet bs, ps, larss, piao, soeren;
 	private BufferedImage block_sheet = null;
 	private BufferedImage player_sheet = null;
 	private BufferedImage boss_sheet = null;
+	private BufferedImage boss1_sheet = null;
+	private BufferedImage boss2_sheet = null;
 	
-	public BufferedImage[] block = new BufferedImage[11];
+	
+	public BufferedImage[] block = new BufferedImage[14];
 	public BufferedImage[] player = new BufferedImage[1];
 	public BufferedImage[] boss = new BufferedImage[1];
+	public BufferedImage[] boss1 = new BufferedImage[1];
+	public BufferedImage[] boss2 = new BufferedImage[1];
 	
 	public Texture() {
 		
@@ -21,7 +27,10 @@ public class Texture {
 		try {
 			block_sheet = loader.loadImage("/block_sheet.png");
 			player_sheet = loader.loadImage("/player_sheet.png");
-			boss_sheet = loader.loadImage("/LarsLoekkeStor.png");
+			boss_sheet = loader.loadImage("/SoerenPapeStor.png");
+			boss1_sheet = loader.loadImage("/PiaOlsenDyhrStor.png");
+			boss2_sheet = loader.loadImage("/LarsLoekkeStor.png");
+			
 		}catch(Exception e) {
 			e.printStackTrace();
 		}
@@ -29,6 +38,8 @@ public class Texture {
 		bs = new SpriteSheet(block_sheet);
 		ps = new SpriteSheet(player_sheet);
 		larss = new SpriteSheet(boss_sheet);
+		piao = new SpriteSheet(boss1_sheet);
+		soeren = new SpriteSheet(boss2_sheet);
 		
 		getTextures();
 	}
@@ -46,8 +57,16 @@ public class Texture {
 		block[8] = bs.grabImage(5, 2, 32, 32);
 		block[9] = bs.grabImage(4, 2, 32, 32);
 		block[10] = bs.grabImage(1, 3, 32, 32);
+		block[11] = bs.grabImage(2, 3, 32, 32);
+		block[12] = bs.grabImage(1, 4, 32, 32);
+		block[13] = bs.grabImage(3, 3, 32, 32);
+		
+		
 		
 		boss[0] = larss.grabImage(1, 1, 64, 128);
+		boss1[0] = piao.grabImage(1, 1, 64, 128);
+		boss2[0] = soeren.grabImage(1, 1, 64, 128);
+		
 		
 		player[0] = ps.grabImage(1, 1, 32, 64); //idle frame for player
 	}
