@@ -28,7 +28,7 @@ public class KeyInput extends KeyAdapter{
 		for(int i = 0; i < handler.object.size(); i++) {
 			GameObject tempObject = handler.object.get(i);
 			
-			if(tempObject.getId() == ObjectId.Player) {
+			if(tempObject.getId() == ObjectId.Player && Game.paused == false) {
 				if(key == KeyEvent.VK_RIGHT && bossPushBack == false) { tempObject.setVelX(5); keyDown[2]=true; }
 				if(key == KeyEvent.VK_LEFT && bossPushBack == false) { tempObject.setVelX(-5); keyDown[3]=true; }
 				if(key == KeyEvent.VK_SPACE && Game.jumps < 2) 
@@ -63,4 +63,5 @@ public class KeyInput extends KeyAdapter{
 		}
 	}
 }
+
 
