@@ -11,7 +11,7 @@ import com.Lukas.Mario.platformer.framework.GameObject;
 import com.Lukas.Mario.platformer.framework.ObjectId;
 import com.Lukas.Mario.platformer.framework.Texture;
 
-public class LarsLøkke extends GameObject {
+public class LarsLoekke extends GameObject {
 
 	public static float width = 64, height = 128;
 
@@ -23,7 +23,7 @@ public class LarsLøkke extends GameObject {
 
 	Texture tex = Game.getInstance();
 
-	public LarsLøkke(float x, float y, int type, Handler handler, ObjectId id) {
+	public LarsLoekke(float x, float y, int type, Handler handler, ObjectId id) {
 		super(x, y, id);
 		this.handler = handler;
 	}
@@ -31,27 +31,119 @@ public class LarsLøkke extends GameObject {
 	public void tick(LinkedList<GameObject> object) {
 		x += velX;
 		y += velY;
-		
-		if(Game.bossHealth < 76 && Game.bossHealth > 50) {
-			if(velX > 0) {
+
+		if (Game.boss2Health < 226 && Game.boss2Health > 200) {
+			if (velX > 0) {
 				velX = 3;
-			} else if(velX < 0) {
+			} else if (velX < 0) {
 				velX = -3;
 			}
 		}
-		
-		if(Game.bossHealth < 51 && Game.bossHealth > 25) {
-			if(velX > 0) {
-				velX = 4;
-			} else if(velX < 0) {
-				velX = -4;
+		if (Game.boss2Health < 201 && Game.boss2Health > 175) {
+			if (velX > 0) {
+				velX = 3;
+			} else if (velX < 0) {
+				velX = -3;
 			}
 		}
-		if(Game.bossHealth < 26) {
-			if(velX > 0) {
+		if (Game.boss2Health < 176 && Game.boss2Health > 150) {
+			if (velX > 0) {
+				velX = 3;
+			} else if (velX < 0) {
+				velX = -3;
+			}
+			int spawn = r.nextInt(100);
+			if (spawn == 0) {
+				handler.addObject(new Goomba((int) x + 48, (int) y + 48, 1, handler, ObjectId.Enemy));
+			}
+		}
+		if (Game.boss2Health < 151 && Game.boss2Health > 125) {
+			if (velX > 0) {
+				velX = 3;
+			} else if (velX < 0) {
+				velX = -3;
+			}
+			int spawn = r.nextInt(100);
+			if (spawn == 0) {
+				handler.addObject(new Goomba((int) x + 48, (int) y + 48, 1, handler, ObjectId.Enemy));
+			}
+		}
+
+		if (Game.boss2Health < 126 && Game.boss2Health > 100) {
+			if (velX > 0) {
+				velX = 3;
+			} else if (velX < 0) {
+				velX = -3;
+			}
+			int spawn = r.nextInt(100);
+			if (spawn == 0) {
+				handler.addObject(new Goomba((int) x + 48, (int) y + 48, 1, handler, ObjectId.Enemy));
+			}
+			int spawnb = r.nextInt(75);
+			if (spawnb == 0) {
+				handler.addObject(new Bullet((int) x + 48, (int) y + 48, 1, handler, ObjectId.Enemy));
+			}
+		}
+
+		if (Game.boss2Health < 101 && Game.boss2Health > 75) {
+			if (velX > 0) {
+				velX = 4;
+			} else if (velX < 0) {
+				velX = -4;
+			}
+			int spawn = r.nextInt(100);
+			if (spawn == 0) {
+				handler.addObject(new SuperGoomba((int) x + 48, (int) y + 48, 1, handler, ObjectId.Enemy));
+			}
+			int spawnb = r.nextInt(75);
+			if (spawnb == 0) {
+				handler.addObject(new Bullet((int) x + 48, (int) y + 48, 1, handler, ObjectId.Enemy));
+			}
+
+		}
+		if (Game.boss2Health < 76 && Game.boss2Health > 50) {
+			if (velX > 0) {
 				velX = 5;
-			} else if(velX < 0) {
+			} else if (velX < 0) {
 				velX = -5;
+			}
+			int spawn = r.nextInt(100);
+			if (spawn == 0) {
+				handler.addObject(new SuperGoomba((int) x + 48, (int) y + 48, 1, handler, ObjectId.Enemy));
+			}
+			int spawnb = r.nextInt(75);
+			if (spawnb == 0) {
+				handler.addObject(new Bullet((int) x + 48, (int) y + 48, 1, handler, ObjectId.Enemy));
+			}
+		}
+		if (Game.boss2Health < 51 && Game.boss2Health > 25) {
+			if (velX > 0) {
+				velX = 6;
+			} else if (velX < 0) {
+				velX = -6;
+			}
+			int spawn = r.nextInt(250);
+			if (spawn == 0) {
+				handler.addObject(new SuperGoomba((int) x + 48, (int) y + 48, 1, handler, ObjectId.Enemy));
+			}
+			int spawnb = r.nextInt(75);
+			if (spawnb == 0) {
+				handler.addObject(new Bullet((int) x + 48, (int) y + 48, 1, handler, ObjectId.Enemy));
+			}
+		}
+		if (Game.boss2Health < 26) {
+			if (velX > 0) {
+				velX = 7;
+			} else if (velX < 0) {
+				velX = -7;
+			}
+			int spawn = r.nextInt(250);
+			if (spawn == 0) {
+				handler.addObject(new SuperGoomba((int) x + 48, (int) y + 48, 1, handler, ObjectId.Enemy));
+			}
+			int spawnb = r.nextInt(75);
+			if (spawnb == 0) {
+				handler.addObject(new Bullet((int) x + 48, (int) y + 48, 1, handler, ObjectId.Enemy));
 			}
 		}
 
@@ -63,13 +155,8 @@ public class LarsLøkke extends GameObject {
 			}
 		}
 
-		if (x < 4100 || x > 4600) {
+		if (x < 4064 || x > 4640) {
 			reverse();
-		}
-
-		int spawn = r.nextInt(100);
-		if (spawn == 0) {
-			handler.addObject(new Goomba((int) x + 48, (int) y + 48, 1, handler, ObjectId.Enemy));
 		}
 
 		int jump = r.nextInt(50);
@@ -111,15 +198,15 @@ public class LarsLøkke extends GameObject {
 
 					y = tempObject.getY() - height;
 					falling = false;
-				}else {
+				} else {
 					falling = true;
 				}
-				
+
 				if (getBoundsLeft().intersects(tempObject.getBounds())) {
 					x = tempObject.getX() + width + 8;
 					reverse();
 				}
-				
+
 				if (getBoundsRight().intersects(tempObject.getBounds())) {
 					x = tempObject.getX() - width - 8;
 					reverse();
@@ -135,16 +222,16 @@ public class LarsLøkke extends GameObject {
 
 	public void render(Graphics g) {
 
-		g.drawImage(tex.boss[0], (int) x, (int) y, null);
+		g.drawImage(tex.boss2[0], (int) x, (int) y, null);
 		g.drawRect((int) x + 16, (int) y, 32, 64);
-		g.drawRect((int) x + 16, (int) y+65, 32, 64);
+		g.drawRect((int) x + 16, (int) y + 65, 32, 64);
 		g.drawRect((int) x, (int) y + 20, 5, 96);
 		g.drawRect((int) x + 59, (int) y + 20, 5, 96);
-	
+
 	}
 
 	public Rectangle getBounds() {
-		return new Rectangle((int) x + 16, (int) y+64, 32, 64);
+		return new Rectangle((int) x + 16, (int) y + 64, 32, 64);
 	}
 
 	public Rectangle getBoundsTop() {
