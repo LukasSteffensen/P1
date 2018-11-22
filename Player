@@ -6,7 +6,9 @@ import java.util.LinkedList;
 
 import com.Lukas.Mario.Window.Camera;
 import com.Lukas.Mario.Window.Game;
+import com.Lukas.Mario.Window.Game.STATE;
 import com.Lukas.Mario.Window.Handler;
+import com.Lukas.Mario.Window.Questions;
 import com.Lukas.Mario.platformer.framework.GameObject;
 import com.Lukas.Mario.platformer.framework.KeyInput;
 import com.Lukas.Mario.platformer.framework.ObjectId;
@@ -18,9 +20,10 @@ public class Player extends GameObject {
 
 	private double gravity = 0.35;
 	private final float MAX_SPEED = 10;
-
+	
+	private Game game;
 	private Handler handler;
-
+	
 	Texture tex = Game.getInstance();
 
 	public Player(float x, float y, Handler handler, Camera cam, ObjectId id) {
@@ -57,6 +60,7 @@ public class Player extends GameObject {
 
 		}
 		collision(object);
+		
 	}
 
 	private void collision(LinkedList<GameObject> object) {
@@ -104,9 +108,9 @@ public class Player extends GameObject {
 						|| getBoundsRight().intersects(tempObject.getBoundsLeft())
 						|| getBoundsLeft().intersects(tempObject.getBoundsRight())) {
 					if (Game.LEVEL == 1) {
-						y = 400;
+						y = 700;
 						velY = 0;
-						x = 100;
+						x = 132;
 						Game.lives--;
 					} else if (Game.LEVEL == 2) {
 						y = 1984;
@@ -117,12 +121,73 @@ public class Player extends GameObject {
 
 				if (getBounds().intersects(tempObject.getBoundsTop())) {
 					handler.removeObject(tempObject);
-					Game.score += 25;
-					Game.kills++;
+					velY = -10;
+				}
+			}
+			if (tempObject.getId() == ObjectId.Bullet) {
+
+				if (getBoundsTop().intersects(tempObject.getBounds())
+						|| getBoundsRight().intersects(tempObject.getBoundsLeft())
+						|| getBoundsLeft().intersects(tempObject.getBoundsRight())) {
+					if (Game.LEVEL == 1) {
+						y = 700;
+						velY = 0;
+						x = 132;
+						Game.lives--;
+					} else if (Game.LEVEL == 2) {
+						y = 1984;
+						x = 3552;
+						Game.lives--;
+					}
+				}
+
+				if (getBounds().intersects(tempObject.getBoundsTop())) {
 					velY = -10;
 				}
 			}
 
+			if (tempObject.getId() == ObjectId.Boss2) {
+
+				if (getBounds().intersects(tempObject.getBoundsTop())) {
+					velY = -10;
+					velX += -15;
+					KeyInput.bossPushBack = true;
+					Game.jumps = 2;
+					Game.boss2Health -= 25;
+
+					if (Game.boss2Health == 0) {
+						handler.removeObject(tempObject);
+					}
+				}
+				if (getBoundsLeft().intersects(tempObject.getBoundsRight())
+						|| getBoundsRight().intersects(tempObject.getBoundsLeft())
+						|| getBoundsTop().intersects(tempObject.getBounds())) {
+					y = 1984;
+					x = 3552;
+					Game.lives--;
+				}
+			}
+			if (tempObject.getId() == ObjectId.Boss1) {
+
+				if (getBounds().intersects(tempObject.getBoundsTop())) {
+					velY = -10;
+					velX += -15;
+					KeyInput.bossPushBack = true;
+					Game.jumps = 2;
+					Game.boss1Health -= 25;
+
+					if (Game.boss1Health == 0) {
+						handler.removeObject(tempObject);
+					}
+				}
+				if (getBoundsLeft().intersects(tempObject.getBoundsRight())
+						|| getBoundsRight().intersects(tempObject.getBoundsLeft())
+						|| getBoundsTop().intersects(tempObject.getBounds())) {
+					y = 1984;
+					x = 3552;
+					Game.lives--;
+				}
+			}
 			if (tempObject.getId() == ObjectId.Boss) {
 
 				if (getBounds().intersects(tempObject.getBoundsTop())) {
@@ -144,6 +209,7 @@ public class Player extends GameObject {
 					Game.lives--;
 				}
 			}
+			
 
 			if (tempObject.getId() == ObjectId.Block) {
 				// Top Collision
@@ -170,13 +236,11 @@ public class Player extends GameObject {
 				if (getBoundsRight().intersects(tempObject.getBounds())) {
 					x = tempObject.getX() - 34;
 					KeyInput.bossPushBack = false;
-					velX = 0;
 				}
 
 				// Left Collision
 				if (getBoundsLeft().intersects(tempObject.getBounds())) {
 					x = tempObject.getX() + 34;
-					velX = 0;
 					KeyInput.bossPushBack = false;
 
 				}
@@ -192,9 +256,9 @@ public class Player extends GameObject {
 
 				// Bottom Collision
 				if (getBounds().intersects(tempObject.getBounds())) {
-					y = 400;
+					y = 700;
 					velY = 0;
-					x = 100;
+					x = 120;
 					Game.lives--;
 				}
 
@@ -226,29 +290,23 @@ public class Player extends GameObject {
 			if (tempObject.getId() == ObjectId.Flag) {
 				// switch level
 				if (getBounds().intersects(tempObject.getBounds())) {
-					handler.switchLevel();
+					if (Questions.correct >= 2) {
+					handler.switchLevel();	
+					}
+					
 				}
 			}
 
-			if (tempObject.getId() == ObjectId.AnswerYes && Game.LEVEL == 1) {
+			if (tempObject.getId() == ObjectId.GoToQuestions && Game.LEVEL == 1) {
 				// top Collision
 				if (getBoundsTop().intersects(tempObject.getBoundsTop())) {
 					y = tempObject.getY() + 32;
 					velY = 0;
-
-					handler.addObject(new Block(2400, 1248, 1, ObjectId.Block));
-					handler.addObject(new Block(2432, 1216, 1, ObjectId.Block));
-					handler.addObject(new Block(2464, 1184, 1, ObjectId.Block));
-					handler.addObject(new Block(2498, 1152, 1, ObjectId.Block));
-					handler.addObject(new Block(2530, 1120, 1, ObjectId.Block));
-					handler.addObject(new Block(2562, 1088, 1, ObjectId.Block));
-					handler.addObject(new Block(2594, 1056, 1, ObjectId.Block));
-					handler.addObject(new Block(2626, 1024, 1, ObjectId.Block));
-					handler.addObject(new Block(2658, 992, 1, ObjectId.Block));
-					handler.addObject(new Block(2690, 960, 1, ObjectId.Block));
-					handler.addObject(new Block(2722, 928, 1, ObjectId.Block));
-					handler.addObject(new Block(2754, 896, 1, ObjectId.Block));
-					handler.addObject(new Block(2786, 864, 1, ObjectId.Block));
+					Questions.counter = 0;
+					Questions.correct = 0;
+					Questions.wrong = 0;
+					if(Questions.counter < 1)
+						Game.paused = true;
 				}
 
 				// Bottom Collision
@@ -280,9 +338,9 @@ public class Player extends GameObject {
 	}
 
 	public void render(Graphics g) {
-
+	
 		g.drawImage(tex.player[0], (int) x, (int) y, null);
-
+		
 	}
 
 	public Rectangle getBounds() {
