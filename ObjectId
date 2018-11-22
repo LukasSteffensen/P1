@@ -8,10 +8,13 @@ public enum ObjectId { // a library that holds all of the objects for our game.
 	Consumable,
 	Coin,
 	Enemy,
+	Bullet,
 	InfoBlock,
 	Flag,
 	Boss,
-	AnswerYes;
+	Boss1,
+	Boss2,
+	GoToQuestions;
 
 
 }
