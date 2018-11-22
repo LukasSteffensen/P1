@@ -1,4 +1,3 @@
-
 package com.Lukas.Mario.Window;
 
 import java.awt.Canvas;
@@ -6,6 +5,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.awt.image.BufferStrategy;
 import java.awt.image.BufferedImage;
 import java.util.Random;
@@ -14,6 +14,7 @@ import com.Lukas.Mario.platformer.framework.KeyInput;
 import com.Lukas.Mario.platformer.framework.ObjectId;
 import com.Lukas.Mario.platformer.framework.Texture;
 import com.Lukas.Mario.Window.Menu;
+import com.Lukas.Mario.Window.Questions;
 
 public class Game extends Canvas implements Runnable
 
@@ -28,25 +29,27 @@ public class Game extends Canvas implements Runnable
 	static Camera cam;
 	static Texture tex;
 	private Menu menu;
-	Random rand = new Random();
+	private Questions questions;
 	public static int lives = 5;
 	public static int hp = 100;
 	public static int score = 0;
-	public static int kills = 0;
 	public static byte info1 = 0;
 	public static int infoTime = 0;
 	public static int bossHealth = 100;
-
+	public static int boss1Health = 200;
+	public static int boss2Health = 250;
 	public static int LEVEL = 1;
 	public static int jumps = 0;
+	public static boolean paused = false;
 
 	public enum STATE { // These are the states of the game
 		MENU, // The first stage is menu; you will see this when you open the game
-		Story, INSTRUCTIONS, // In the menu you can click instructions to see how to play the game
-		GAME // this is the state youre in when actually playing the game
+		STORY, INSTRUCTIONS, // In the menu you can click instructions to see how to play the game
+		GAME, // this is the state youre in when actually playing the game
+		FALSE, CORRECT
 	};
 
-	public STATE state = STATE.GAME;
+	public STATE state = STATE.MENU;
 
 	public void init() {
 
@@ -58,12 +61,14 @@ public class Game extends Canvas implements Runnable
 		BufferedImageLoader loader = new BufferedImageLoader();
 		level = loader.loadImage("/real_level.png"); // load the premade level
 		level2 = loader.loadImage("/level1.png");
-		background = loader.loadImage("/background.png");
+		background = loader.loadImage("/PoliticalBuilding.png");
 
 		cam = new Camera(0, 0);
 		handler = new Handler(cam);
 		menu = new Menu(this, handler);
+		questions = new Questions(this, handler);
 		this.addMouseListener(menu);
+		this.addMouseListener(questions);
 		this.addKeyListener(new KeyInput(handler));
 
 		// The game only loads the level when the game state is Game
@@ -127,7 +132,6 @@ public class Game extends Canvas implements Runnable
 		} else if (state == STATE.MENU) {
 			menu.tick();
 		}
-
 	}
 
 	private void render() {
@@ -142,33 +146,29 @@ public class Game extends Canvas implements Runnable
 		///////////////////////////////////
 
 		// Draw here (everything inthe game)
-		g.setColor(Color.BLACK); // Makes the screen not flash
-		g.fillRect(0, 0, getWidth(), getHeight()); // see above
 		Font hud = new Font("arial", 1, 20);
-
-		g.setFont(hud);
-		g.setColor(Color.black);
-		g.drawString("Score: " + score, 120, 50);
 
 		// begin of cam
 		g2d.translate(cam.getX(), cam.getY());
 
 		if (state == STATE.GAME) { // The background is only shown when the game is running
-
+			for (int xx = -500; xx < background.getWidth() * 10; xx += background.getWidth()) {
+				g.drawImage(background, xx, -600, this);
+			}
 			for (int xx = -500; xx < background.getWidth() * 10; xx += background.getWidth()) {
 				g.drawImage(background, xx, 0, this);
 			}
 			for (int xx = -500; xx < background.getWidth() * 10; xx += background.getWidth()) {
-				g.drawImage(background, xx, 640, this);
+				g.drawImage(background, xx, 600, this);
 			}
 			for (int xx = -500; xx < background.getWidth() * 10; xx += background.getWidth()) {
-				g.drawImage(background, xx, 1280, this);
+				g.drawImage(background, xx, 1200, this);
 			}
 			for (int xx = -500; xx < background.getWidth() * 10; xx += background.getWidth()) {
-				g.drawImage(background, xx, 1920, this);
+				g.drawImage(background, xx, 1800, this);
 			}
 			for (int xx = -500; xx < background.getWidth() * 10; xx += background.getWidth()) {
-				g.drawImage(background, xx, 2560, this);
+				g.drawImage(background, xx, 2400, this);
 			}
 
 			handler.render(g);
@@ -188,15 +188,17 @@ public class Game extends Canvas implements Runnable
 
 			// end of cam
 			g2d.translate(-cam.getX(), -cam.getY());
-			
-			if(Game.LEVEL == 2) {			
-			g.setColor(Color.gray);
-			g.drawRect(250, 5, 300, 32);
-			g.setColor(Color.green);
-			g.fillRect(250, 5, bossHealth * 3, 32);
-			g.setColor(Color.BLACK);
-			g.drawRect(250, 5, 300, 32);
-			g.drawString("Yo mofo, is da bozz", 300, 60);
+
+			questions.render(g);
+
+			if (Game.LEVEL == 2) {
+				g.setColor(Color.gray);
+				g.drawRect(250, 5, 300, 32);
+				g.setColor(Color.green);
+				g.fillRect(250, 5, bossHealth * 3, 32);
+				g.setColor(Color.BLACK);
+				g.drawRect(250, 5, 300, 32);
+				g.drawString("Yo mofo, is da bozz", 300, 60);
 			}
 
 			g.setFont(hud);
@@ -208,8 +210,10 @@ public class Game extends Canvas implements Runnable
 			g.setColor(Color.black); // color of text
 			g.drawString("Tickets: " + score, 5, 80); // Placement of the text. 1st: distance from the left. 2nd:
 														// Distance from the top.
+			g.drawString("Correct answers: " + Questions.correct, 5, 120);
+			g.drawString("Wrong answers: " + Questions.wrong, 5, 140);
 
-		} else if (state == STATE.MENU || state == STATE.INSTRUCTIONS || state == STATE.Story) {
+		} else if (state == STATE.MENU || state == STATE.INSTRUCTIONS || state == STATE.STORY) {
 			menu.render(g);
 
 		}
@@ -229,4 +233,3 @@ public class Game extends Canvas implements Runnable
 	}
 
 }
-
