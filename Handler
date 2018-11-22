@@ -6,23 +6,28 @@ import java.util.LinkedList;
 
 import com.Lukas.Mario.platformer.framework.GameObject;
 import com.Lukas.Mario.platformer.framework.ObjectId;
-import com.Lukas.Mario.platformer.objects.AnswerYes;
 import com.Lukas.Mario.platformer.objects.Block;
-import com.Lukas.Mario.platformer.objects.LarsLøkke;
+import com.Lukas.Mario.platformer.objects.Bullet;
 import com.Lukas.Mario.platformer.objects.Coin;
 import com.Lukas.Mario.platformer.objects.DeathBlock;
 import com.Lukas.Mario.platformer.objects.Flag;
+import com.Lukas.Mario.platformer.objects.GoToQuestions;
 import com.Lukas.Mario.platformer.objects.Goomba;
 import com.Lukas.Mario.platformer.objects.InfoBlock;
+import com.Lukas.Mario.platformer.objects.LarsLoekke;
+import com.Lukas.Mario.platformer.objects.PiaOlsen;
 import com.Lukas.Mario.platformer.objects.Player;
+import com.Lukas.Mario.platformer.objects.SoerenPape;
+import com.Lukas.Mario.platformer.objects.SuperGoomba;
 
 public class Handler {
 
-	public LinkedList<GameObject> object = new LinkedList<GameObject>(); // creating a list of game objects that we can render and update.
+	public LinkedList<GameObject> object = new LinkedList<GameObject>(); // creating a list of game objects that we can
+																			// render and update.
 	private GameObject tempObject;
 	private Camera cam;
 	private BufferedImage level2 = null, level3 = null;
-	
+
 	public Handler(Camera cam) {
 		this.cam = cam;
 
@@ -33,7 +38,7 @@ public class Handler {
 
 	public void tick() { // Updates our objects in our list.
 		for (int i = 0; i < object.size(); i++) {
-			tempObject = object.get(i); // Sets our tempObject to what to object in our list is at that current time 
+			tempObject = object.get(i); // Sets our tempObject to what to object in our list is at that current time
 			tempObject.tick(object);
 		}
 	}
@@ -67,24 +72,34 @@ public class Handler {
 				if (red == 0 && green == 38 && blue == 255)
 					addObject(new Block(xx * 32, yy * 32, 3, ObjectId.Block)); //
 				if (red == 178 && green == 0 && blue == 255)
-					addObject(new Block(xx * 32, yy * 32, 4, ObjectId.Block)); // replaces magenta pixels right end of platform
+					addObject(new Block(xx * 32, yy * 32, 4, ObjectId.Block)); // replaces magenta pixels right end of
+																				// platform
 				if (red == 125 && green == 0 && blue == 55)
 					addObject(new InfoBlock(xx * 32, yy * 32, 5, ObjectId.InfoBlock));
 				if (red == 1 && green == 255 && blue == 255)
-					addObject(new AnswerYes(xx * 32, yy * 32, 6, ObjectId.AnswerYes));
+					addObject(new GoToQuestions(xx * 32, yy * 32, 6, ObjectId.GoToQuestions));
 				if (red == 255 && green == 216 && blue == 0)
 					addObject(new Coin(xx * 32, yy * 32, 7, ObjectId.Coin));
 				if (red == 255 && green == 0 && blue == 0)
 					addObject(new DeathBlock(xx * 32, yy * 32, 8, ObjectId.DeathBlock));
 				if (red == 0 && green == 255 && blue == 0)
 					addObject(new DeathBlock(xx * 32, yy * 32, 9, ObjectId.DeathBlock));
-				
-						
-				if (red == 200 && green == 200 && blue == 0)
-					addObject(new LarsLøkke(xx * 32, yy * 32, 0, this, ObjectId.Boss));
+				if (red == 150 && green == 50 && blue == 50)
+					addObject(new Block(xx * 32, yy * 32, 11, ObjectId.Block));
 
+				if (red == 160 && green == 100 && blue == 37)
+					addObject(new SuperGoomba(xx * 32, yy * 32, 0, this, ObjectId.Enemy));
+				if (red == 180 && green == 100 && blue == 37)
+					addObject(new Bullet(xx * 32, yy * 32, 0, this, ObjectId.Bullet));
 				if (red == 125 && green == 55 && blue == 15)
 					addObject(new Goomba(xx * 32, yy * 32, 0, this, ObjectId.Enemy));
+
+				if (red == 165 && green == 155 && blue == 0)
+					addObject(new SoerenPape(xx * 32, yy * 32, 0, this, ObjectId.Boss));
+				if (red == 250 && green == 100 && blue == 0)
+					addObject(new PiaOlsen(xx * 32, yy * 32, 0, this, ObjectId.Boss1));
+				if (red == 200 && green == 200 && blue == 0)
+					addObject(new LarsLoekke(xx * 32, yy * 32, 0, this, ObjectId.Boss2));
 
 				if (red == 0 && green == 0 && blue == 255)
 					addObject(new Player(xx * 32, yy * 32, this, cam, ObjectId.Player));
@@ -107,11 +122,12 @@ public class Handler {
 			break;
 		case 2:
 			loadImageLevel(level3);
+			Game.LEVEL++;
 			break;
 		}
 	}
 
-	private void clearLevel() {
+	public void clearLevel() {
 		object.clear();
 	}
 
