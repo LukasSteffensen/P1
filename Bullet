@@ -2,6 +2,7 @@ package com.Lukas.Mario.platformer.objects;
 
 import java.awt.Graphics;
 import java.awt.Rectangle;
+import java.security.SecureRandom;
 import java.util.LinkedList;
 
 import com.Lukas.Mario.Window.Game;
@@ -13,17 +14,25 @@ import com.Lukas.Mario.platformer.framework.Texture;
 public class Bullet extends GameObject {
 
 	private float width = 32, height = 28;
-	
-	private float gravity = 0f;
-	private final float MAX_SPEED = 10;
+
+	SecureRandom r = new SecureRandom();
 	private int velX = -3;
 	private Handler handler;
-
+	
 	Texture tex = Game.getInstance();
 
 	public Bullet(float x, float y, int type, Handler handler, ObjectId id) {
 		super(x, y, id);
 		this.handler = handler;
+		
+		int facing = r.nextInt(2);
+		if(facing == 0) {
+			velX *= -1;
+			
+		}
+		if(facing == 1) {
+			velX *= 1;
+		}
 	}
 
 	public void tick(LinkedList<GameObject> object) {
@@ -33,16 +42,6 @@ public class Bullet extends GameObject {
 		collision(object);
 	}
 
-	public void reverse() {
-		velX *= -1;
-	}
-	public void destroy() {
-		y = 5125;
-		x = 0;
-		velX=0;
-		
-	}
-
 	private void collision(LinkedList<GameObject> object) {
 		for (int i = 0; i < handler.object.size(); i++) {
 			GameObject tempObject = handler.object.get(i);
@@ -50,17 +49,17 @@ public class Bullet extends GameObject {
 			if (tempObject.getId() == ObjectId.Block) {
 				if (getBoundsLeft().intersects(tempObject.getBounds())) {
 					x = tempObject.getX() + width + 2;
-					destroy();
+					handler.removeObject(Bullet.this);
 				}
 				if (getBoundsRight().intersects(tempObject.getBounds())) {
 					x = tempObject.getX() - width - 2;
-					destroy();
+					handler.removeObject(Bullet.this);
 				}
 			}	
 		}
 	}
 	public void render(Graphics g) {
-		g.drawImage(tex.block[11], (int) x, (int) y, null);
+		g.drawImage(tex.block[13], (int) x, (int) y, null);
 	}
 
 	public Rectangle getBoundsTop() {
