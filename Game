@@ -1,3 +1,4 @@
+
 package com.Lukas.Mario.Window;
 
 import java.awt.Canvas;
@@ -31,7 +32,6 @@ public class Game extends Canvas implements Runnable
 	private Menu menu;
 	private Questions questions;
 	public static int lives = 5;
-	public static int hp = 100;
 	public static int score = 0;
 	public static byte info1 = 0;
 	public static int infoTime = 0;
@@ -49,7 +49,7 @@ public class Game extends Canvas implements Runnable
 		FALSE, CORRECT
 	};
 
-	public STATE state = STATE.MENU;
+	public STATE state = STATE.GAME;
 
 	public void init() {
 
@@ -146,7 +146,7 @@ public class Game extends Canvas implements Runnable
 		///////////////////////////////////
 
 		// Draw here (everything inthe game)
-		Font hud = new Font("arial", 1, 20);
+		Font hud = new Font("arial", 1, 18);
 
 		// begin of cam
 		g2d.translate(cam.getX(), cam.getY());
@@ -177,11 +177,37 @@ public class Game extends Canvas implements Runnable
 				infoTime++;
 				g.setFont(hud); // Size and font of text (see further above)
 				g.setColor(Color.black); // The background of the info box
-				g.fillRect(1500, 1000, 250, 200); // Size and placement of the box
+				g.fillRect(100, 1225, 250, 200); // Size and placement of the box
 				g.setColor(Color.WHITE); // The color of the text
-				g.drawString("Here's how to play!", 110, 220); // Text in box + placement of text
-			}
-			if (infoTime > 1000) {
+				g.drawString("Fun fact: ", 110, 1250); // Text in box + placement of text
+				g.drawString("Did you know that", 110, 1300);
+				g.drawString("the political party \"Det", 110, 1325);
+				g.drawString("Konservative Folkeparti\" ", 110, 1350);
+				g.drawString("wants to lower the taxes", 110, 1375);
+				g.drawString("by 40 billion before 2020?", 110, 1400);
+				
+				g.setColor(Color.BLACK);
+				g.fillRect(2450, 200, 250, 200);
+				g.setColor(Color.WHITE);
+				g.drawString("Fun fact!", 2460, 225);
+				g.drawString("Did you know that the", 2460, 275);
+				g.drawString("party \"Det Konservative", 2460, 300);
+				g.drawString("\"Folkeparti isn't based on", 2460, 325);
+				g.drawString("any ideology?", 2460, 350);
+				
+				g.setColor(Color.BLACK);
+				g.fillRect(2575, 1700, 250, 200);
+				g.setColor(Color.WHITE);
+				g.drawString("Fun fact!", 2585, 1725);
+				g.drawString("Did you know that", 2585, 1765);
+				g.drawString("The party \"Det Danske", 2585, 1790);
+				g.drawString("Folkeparti\" believes that", 2585, 1815);
+				g.drawString("we are all free individuals,", 2585, 1840);
+				g.drawString("but also responsible ", 2585, 1865);
+				g.drawString("citizens", 2585, 1890);
+				
+			} 
+			if (infoTime > 2500) {
 				info1 = 0;
 				infoTime = 0;
 			}
@@ -210,8 +236,8 @@ public class Game extends Canvas implements Runnable
 			g.setColor(Color.black); // color of text
 			g.drawString("Tickets: " + score, 5, 80); // Placement of the text. 1st: distance from the left. 2nd:
 														// Distance from the top.
-			g.drawString("Correct answers: " + Questions.correct, 5, 120);
-			g.drawString("Wrong answers: " + Questions.wrong, 5, 140);
+			//g.drawString("Correct answers: " + Questions.correct, 5, 120);
+			//g.drawString("Wrong answers: " + Questions.wrong, 5, 140);
 
 		} else if (state == STATE.MENU || state == STATE.INSTRUCTIONS || state == STATE.STORY) {
 			menu.render(g);
