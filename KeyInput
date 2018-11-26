@@ -5,63 +5,92 @@ import java.awt.event.KeyEvent;
 
 import com.Lukas.Mario.Window.Game;
 import com.Lukas.Mario.Window.Handler;
+import com.Lukas.Mario.platformer.objects.Player;
 
-public class KeyInput extends KeyAdapter{
-	
+public class KeyInput extends KeyAdapter {
+
 	Handler handler;
 	private boolean[] keyDown = new boolean[4];
-	public static boolean bossPushBack = false;
-	
-	
+	private boolean facingRight = true;
+	public static float speed = 0;
+
 	public KeyInput(Handler handler) {
 		this.handler = handler;
-		
-		keyDown[1]=false;
-		keyDown[2]=false;
-		keyDown[3]=false;
+
+		keyDown[1] = false;
+		keyDown[2] = false;
+		keyDown[3] = false;
 	}
-	
-	
+
 	public void keyPressed(KeyEvent e) {
 		int key = e.getKeyCode();
-		
-		for(int i = 0; i < handler.object.size(); i++) {
+
+		for (int i = 0; i < handler.object.size(); i++) {
 			GameObject tempObject = handler.object.get(i);
-			
-			if(tempObject.getId() == ObjectId.Player && Game.paused == false) {
-				if(key == KeyEvent.VK_RIGHT && bossPushBack == false) { tempObject.setVelX(5); keyDown[2]=true; }
-				if(key == KeyEvent.VK_LEFT && bossPushBack == false) { tempObject.setVelX(-5); keyDown[3]=true; }
-				if(key == KeyEvent.VK_SPACE && Game.jumps < 2) 
-				{ 
+
+			if (tempObject.getId() == ObjectId.Player && Game.paused == false) {
+				if (key == KeyEvent.VK_RIGHT) {
+					if (tempObject.velX > 5) {
+						tempObject.velX = 5;
+					}
+					if (Game.LEVEL != 3) {
+						tempObject.setVelX(5);
+					} else if (Game.LEVEL == 3) {
+						if (Game.jumps == 0) {
+							tempObject.setVelX(tempObject.velX += 0.5);
+						} else if (Game.jumps != 0) {
+							tempObject.setVelX(5);
+						}
+					}
+					facingRight = true;
+					keyDown[2] = true;
+				}
+				if (key == KeyEvent.VK_LEFT) {
+					if (tempObject.velX < -5) {
+						tempObject.velX = -5;
+					}
+					if (Game.LEVEL != 3) {
+						tempObject.setVelX(-5);
+					} else if (Game.LEVEL == 3) {
+						if (Game.jumps == 0) {
+							tempObject.setVelX(tempObject.velX -= 0.5);
+						} else if (Game.jumps != 0) {
+							tempObject.setVelX(-5);
+						}
+					}
+					facingRight = false;
+					keyDown[3] = true;
+				}
+				if (key == KeyEvent.VK_SPACE && Game.jumps < 2) {
 					tempObject.setVelY(-10);
 					Game.jumps++;
-				} 
+				}
 			}
-			
-			
+
 		}
-		
-		if(key == KeyEvent.VK_ESCAPE) System.exit(1);
-			
-		
+
+		if (key == KeyEvent.VK_ESCAPE)
+			System.exit(1);
+
 	}
-	
+
 	public void keyReleased(KeyEvent e) {
 		int key = e.getKeyCode();
-		
-		for(int i = 0; i < handler.object.size(); i++) {
+
+		for (int i = 0; i < handler.object.size(); i++) {
 			GameObject tempObject = handler.object.get(i);
-			
-			
-			if(tempObject.getId() == ObjectId.Player) 
-			{
-				if(key == KeyEvent.VK_RIGHT) keyDown[2]=false; 
-				if(key == KeyEvent.VK_LEFT) keyDown[3]=false;
-			
-				if(!keyDown[2] && !keyDown[3]) tempObject.setVelX(0);
+
+			if (tempObject.getId() == ObjectId.Player) {
+				if (key == KeyEvent.VK_RIGHT)
+					keyDown[2] = false;
+				if (key == KeyEvent.VK_LEFT)
+					keyDown[3] = false;
+				
+				if(!keyDown[3] && !keyDown[2] && Game.LEVEL != 3) {
+					tempObject.setVelX(0);
+				}
 			}
 		}
 	}
 }
-
 
