@@ -11,7 +11,6 @@ public class KeyInput extends KeyAdapter {
 
 	Handler handler;
 	private boolean[] keyDown = new boolean[4];
-	private boolean facingRight = true;
 	public static float speed = 0;
 
 	public KeyInput(Handler handler) {
@@ -33,32 +32,24 @@ public class KeyInput extends KeyAdapter {
 					if (tempObject.velX > 5) {
 						tempObject.velX = 5;
 					}
-					if (Game.LEVEL != 3) {
+					if (Player.isOnIce == false) {
 						tempObject.setVelX(5);
-					} else if (Game.LEVEL == 3) {
-						if (Game.jumps == 0) {
-							tempObject.setVelX(tempObject.velX += 0.5);
-						} else if (Game.jumps != 0) {
-							tempObject.setVelX(5);
-						}
 					}
-					facingRight = true;
+					if (Player.isOnIce == true) {
+						tempObject.velX += 0.5;
+					}
 					keyDown[2] = true;
 				}
 				if (key == KeyEvent.VK_LEFT) {
 					if (tempObject.velX < -5) {
 						tempObject.velX = -5;
 					}
-					if (Game.LEVEL != 3) {
+					if (Player.isOnIce == false) {
 						tempObject.setVelX(-5);
-					} else if (Game.LEVEL == 3) {
-						if (Game.jumps == 0) {
-							tempObject.setVelX(tempObject.velX -= 0.5);
-						} else if (Game.jumps != 0) {
-							tempObject.setVelX(-5);
-						}
 					}
-					facingRight = false;
+					if (Player.isOnIce == true) {
+						tempObject.velX -= 0.5;
+					}
 					keyDown[3] = true;
 				}
 				if (key == KeyEvent.VK_SPACE && Game.jumps < 2) {
@@ -85,12 +76,11 @@ public class KeyInput extends KeyAdapter {
 					keyDown[2] = false;
 				if (key == KeyEvent.VK_LEFT)
 					keyDown[3] = false;
-				
-				if(!keyDown[3] && !keyDown[2] && Game.LEVEL != 3) {
+
+				if (!keyDown[3] && !keyDown[2] && Player.isOnIce == false) {
 					tempObject.setVelX(0);
 				}
 			}
 		}
 	}
 }
-
