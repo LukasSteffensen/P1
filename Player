@@ -17,9 +17,10 @@ public class Player extends GameObject {
 	private float width = 32, height = 64;
 
 	private double gravity = 0.35;
-	private double sidewaysGravity = 0.05;
+	private double sidewaysGravity = 0.1;
 	private final float MAX_SPEED = 10;
 	private float maxVelX = 5;
+	public static boolean isOnIce = false;
 	private Handler handler;
 
 	Texture tex = Game.getInstance();
@@ -32,8 +33,6 @@ public class Player extends GameObject {
 	public void tick(LinkedList<GameObject> object) {
 		x += velX;
 		y += velY;
-		
-		ice();
 		
 		if (Game.score >= 100) {
 			Game.score = 0;
@@ -57,7 +56,7 @@ public class Player extends GameObject {
 	}
 	
 	public void ice() {
-		if (Game.LEVEL == 3) {
+		if(Game.jumps == 0) {
 			if (velX > 0) {
 				velX -= sidewaysGravity;
 			}
@@ -66,7 +65,7 @@ public class Player extends GameObject {
 			}
 		}
 	}
-
+	
 	private void collision(LinkedList<GameObject> object) {
 		for (int i = 0; i < handler.object.size(); i++) {
 			GameObject tempObject = handler.object.get(i);
@@ -224,6 +223,11 @@ public class Player extends GameObject {
 					velY = 0;
 					falling = false;
 					jumping = false;
+					if(isOnIce == true) {
+						isOnIce = false;
+						velX = 0;
+					}
+					
 					Game.jumps = 0;
 				} else {
 					falling = true;
@@ -332,10 +336,40 @@ public class Player extends GameObject {
 					x = tempObject.getX() + 32;
 
 				}
+			}
+			
+			if(tempObject.getId() == ObjectId.IceBlock) {
+				
+				if (getBoundsTop().intersects(tempObject.getBounds())) {
+					y = tempObject.getY() + height - 32;
+					velY = 0;
+				}
+				// Bottom Collision
+				if (getBounds().intersects(tempObject.getBounds())) {
+					y = tempObject.getY() - height;
+					velY = 0;
+					falling = false;
+					jumping = false;
+					isOnIce = true;
+					Game.jumps = 0;
+					ice();
+				} else {
+					falling = true;
+				}
 
+				// Right Collision
+				if (getBoundsRight().intersects(tempObject.getBounds())) {
+					x = tempObject.getX() - 34;
+					velX = 0;
+				}
+
+				// Left Collision
+				if (getBoundsLeft().intersects(tempObject.getBounds())) {
+					x = tempObject.getX() + 34;
+					velX = 0;
+				}
 			}
 		}
-
 	}
 
 	public void render(Graphics g) {
@@ -361,5 +395,4 @@ public class Player extends GameObject {
 	public Rectangle getBoundsLeft() {
 		return new Rectangle((int) x, (int) y + 5, (int) 5, (int) height - 16);
 	}
-
 }
