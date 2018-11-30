@@ -1,0 +1,36 @@
+package Window;
+
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+import java.io.File;
+import Window.Game;
+
+public class Music {
+
+    Clip clip;
+
+    public void music(String filepath){
+
+        File music = new File(filepath);
+
+        try{
+            AudioInputStream audioInput = AudioSystem.getAudioInputStream(music);
+            clip = AudioSystem.getClip();
+            clip.open(audioInput);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+    }
+    public void play(){
+        clip.setFramePosition(0);
+        clip.start();
+    }
+    public void loop(){
+        clip.loop(Clip.LOOP_CONTINUOUSLY);
+    }
+    public void stop(){
+        clip.stop();
+        clip.close();
+    }
+}
