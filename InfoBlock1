@@ -12,7 +12,10 @@ import com.Lukas.Mario.platformer.framework.Texture;
 
 public class InfoBlock extends GameObject{
 	
-	private float width = 32, height = 28;
+	private float width = 32, height = 28; // size of "info block" in pixels
+	
+	private float gravity = 0.35f;
+	private final float MAX_SPEED = 10;
 	
 	Texture tex = Game.getInstance();
 	public static int type;
@@ -35,7 +38,7 @@ public class InfoBlock extends GameObject{
 	}
 
 	public Rectangle getBounds() {
-		return new Rectangle((int) x, (int) y, 32, 27);
+		return new Rectangle((int) x, (int) y, 32, 27); 
 	}
 
 	public Rectangle getBoundsRight() {
@@ -49,5 +52,7 @@ public class InfoBlock extends GameObject{
 	public Rectangle getBoundsTop() {
 		return new Rectangle((int) x, (int) ((int)y + (height)), 32, (int)height/8);
 	}
+	
+	
 
 }
