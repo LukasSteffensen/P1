@@ -29,7 +29,7 @@ public class Coin extends GameObject{
 	}
 
 	public Rectangle getBounds() {
-		return new Rectangle((int) x, (int) y, 32, 32);
+		return new Rectangle((int) x, (int) y, 32, 32); // size of "coins" in pixels
 	}
 
 	public Rectangle getBoundsRight() {
